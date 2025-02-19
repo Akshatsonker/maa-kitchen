@@ -1,0 +1,7 @@
+/* styles.css */
+.custom-background {
+    background-image: url("https://png.pngtree.com/background/20230528/original/pngtree-an-arrangement-of-various-indian-food-picture-image_2778221.jpg");
+    background-size: cover; /* This will cover the entire div */
+    background-position: center; /* This will center the image */
+  
+}
