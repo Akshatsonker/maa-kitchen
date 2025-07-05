@@ -1,38 +1,49 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Login = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState(''); // Use email instead of username
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  
-  const handleSubmit = (e) => {
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Here you can add your login logic (e.g., API call)
-    if (username === '' || password === '') {
+    if (email === '' || password === '') {
       setError('Please fill in all fields');
-    } else {
-      setError('');
-      // Simulate a successful login
-      console.log('Logged in with:', { username, password });
-      // Redirect or perform other actions after successful login
+      return;
+    }
+    setError('');
+    try {
+      const response = await fetch('http://localhost:8080/signUp/signIn', { // Adjust URL as needed
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      const data = await response.json();
+      if (!data.success) {
+        setError(data.message);
+      } else {
+        // Save token if you want
+        localStorage.setItem('token', data.jwtToken);
+        // Redirect to welcome page
+        navigate('/welcome');
+      }
+    } catch (err) {
+      setError('Server error. Please try again later.');
     }
   };
 
   return (
     <div style={styles.container}>
-      {/* Home Link positioned at the top right */}
-      <span style={styles.homeLink}>
-        <Link to="/">Home</Link>
-      </span>
-    
+     
       <form onSubmit={handleSubmit} style={styles.form}>
         <div style={styles.inputGroup}>
-          <label>Username:</label>
+          <label>Email:</label>
           <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            type="email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
             style={styles.input}
           />
         </div>
@@ -41,41 +52,41 @@ const Login = () => {
           <input
             type="password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={e => setPassword(e.target.value)}
             style={styles.input}
           />
         </div>
         {error && <p style={styles.error}>{error}</p>}
         <button type="submit" style={styles.button}>Login</button>
+        <p>Don't have an account? <Link to="/">Sign Up</Link></p>
       </form>
     </div>
   );
 };
-
 const styles = {
   container: {
     width: '100vw',
-    height: '100vh', // Make the container fill the whole screen height
+    height: '100vh',
     margin: '0 auto',
     padding: '20px',
     border: '1px solid #ccc',
     borderRadius: '5px',
     boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
-    display: 'flex', // Enable flexbox
+    display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     fontFamily: 'Arial, sans-serif',
-    backgroundImage: "url('https://wallpaperaccess.com/full/1737995.jpg')", // Corrected background image syntax
-    backgroundSize: 'cover', // Ensure the background image covers the container
-    backgroundPosition: 'center', // Center the background image
-    position: 'relative', // Set position to relative for absolute positioning of child elements
+    backgroundImage: "url('https://wallpaperaccess.com/full/1737995.jpg')",
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    position: 'relative',
   },
   homeLink: {
-    position: 'absolute', // Position the Home link absolutely
-    top: '20px', // Adjust top position
-    right: '20px', // Adjust right position
-    color: 'black', // Set text color
-    fontSize: '24px', // Set font size
+    position: 'absolute',
+    top: '20px',
+    right: '20px',
+    color: 'black',
+    fontSize: '24px',
   },
   form: {
     display: 'flex',
@@ -103,5 +114,7 @@ const styles = {
     color: 'red',
   },
 };
+
+// ...styles object remains the same
 
 export default Login;

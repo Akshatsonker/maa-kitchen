@@ -125,12 +125,13 @@ import React, { useEffect, useState } from 'react';
 import Typed from 'typed.js';
 import Suggestions from './suggestion'; // Ensure this is the correct path to your Suggestions component
 import './styles.css';
+import { Link } from 'react-router-dom';
 
 const TypedText = () => {
     // State for typed text
     useEffect(() => {
         const options = {
-            strings: ['Maa k haath', 'Ka Khana', 'Dil Bhar Jana!'],
+            strings: ['Welcome to Maa Kitchen!'],
             typeSpeed: 50,
         };
 
@@ -179,26 +180,38 @@ const TypedText = () => {
     };
 
     return (
-        <div className="container">
-            <div className="w-full h-96 bg-white custom-background">
-                <span className="text-bold text-9xl text-white ml-85 pt-32" id="element"></span> {/* This is where the typed text will appear */}
+        <div className="w-full">
+            <div className="w-full h-96  bg-white custom-background">
+             <span className="text-bold text-7xl  text-white flex justify-center items-center mt-36" id="element"></span>
                 
-                <div className="flex flex-col items-center mt-24">
-                    <input
-                        type="text"
-                        value={searchTerm}
-                        onChange={handleChange}
-                        placeholder="Search for food here..."
-                        className="text-white ml-28 rounded-xl bg-black border-2 border-gray-300 p-2 w-1/3"
-                    />
-                    <button
-                        onClick={handleSearch}
-                        className="  text-white ml-4 rounded-xl border-2 bg-black p-2"
-                    >
-                        Search
-                    </button>
-                    {showDropdown && <Suggestions handleClick={handleClick} data={filteredFoodItems} />}
-                </div>
+               <div className="flex flex-row items-center justify-center mt-24 h-56">
+  {/* Input and Suggestions Wrapper */}
+  <div className="relative flex flex-col">
+    <input
+      type="text"
+      value={searchTerm}
+      onChange={handleChange}
+      placeholder="Search for food here..."
+      className="text-white h-8 rounded-xl bg-black border-2 border-gray-300 p-2 w-80"
+    />
+    {showDropdown && (
+      <div className="absolute top-full left-0 w-full z-10">
+        <Suggestions handleClick={handleClick} data={filteredFoodItems} />
+      </div>
+    )}
+  </div>
+  {/* Search Button */}
+  <button
+  onClick={handleSearch}
+  className="text-white h-8 rounded-xl border-2  bg-black p-2 w-32"
+>
+  <Link to="/menu" className=" w-full  h-full">
+    Search
+  </Link>
+</button>
+</div>
+
+
             </div>
         </div>
     );

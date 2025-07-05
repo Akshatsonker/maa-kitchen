@@ -8,7 +8,7 @@ export default function BackgroundLinesDemo() {
       
       {/* Home Link positioned at the top left */}
       <span className="absolute top-4 right-4 text-3xl text-brown">
-        <Link to="/">Home</Link>
+        <Link to="/welcome">Home</Link>
       </span>
         
       <div className="text-center">

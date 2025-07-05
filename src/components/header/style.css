@@ -1,0 +1,30 @@
+@media screen and (max-width: 600px) {
+    /* General text resizing */
+    body {
+        height:30%;
+        margin: 0;
+        font-size: 14px;
+        
+    }
+    
+    /* Header adjustments */
+   
+    
+    .h1, h1 {
+        font-size: 20px;
+        margin: 10px 0;
+    }
+    
+    /* Navigation menu */
+    .menu {
+        font-size: 12px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    /* Search bar */
+   
+    
+   
+}

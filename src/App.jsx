@@ -126,43 +126,35 @@ const AppWrapper = () => (
 export default AppWrapper;
 */
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './index.css';
 import ColourfulText from './components/body/index.jsx';
 import Footer from './components/footer/index.jsx';
-import CardDemo from './pages/cart.jsx'; // Ensure this path is correct
+import CardDemo from './pages/cart.jsx';
 import Header from './components/header/index.jsx';
-import Login from './pages/login.jsx'; // Ensure this path is correct
+import Login from './pages/login.jsx';
 import BackgroundLinesDemo from './components/About/index.jsx';
-import Home from './pages/cart.jsx'
-function MainContent() {
-  const location = useLocation(); // Get the current location
-
-  return (
-    <div>
-      {/* Conditionally render Header based on the current route */}
-      {location.pathname !== '/Login' && location.pathname !== '/Menu'&& location.pathname !== '/AboutUs' && location.pathname !== '/Home'&& <Header />}
-
-      <Routes>
-        {/* Add a route for the root path */}
-        <Route path="/" element={<ColourfulText />} /> {/* Default route */}
-        <Route path="/Menu" element={<CardDemo />} /> {/* Route for Menu */}
-        <Route path="/Login" element={<Login />} /> {/* Route for Login */}
-        <Route path="/AboutUs" element={<BackgroundLinesDemo />} /> {/* Route for Login */}
-       
-        {/* Other routes can be added here */}
-      </Routes>
-
-      {/* Conditionally render Footer based on the current route */}
-      {location.pathname !== '/Menu'&& location.pathname !== '/Login' && location.pathname !== '/AboutUs' && location.pathname !== '/Home' && <Footer />}
-    </div>
-  );
-}
+import SignupPage from './signFrontend/test.jsx'
+import ProductDetails from '../src/payment/frontend/paymentHome.jsx';
 
 function App() {
   return (
     <Router>
-      <MainContent />
+      <Routes>
+        <Route path="/" element={<SignupPage />} />
+        <Route path="/welcome" element={<>
+          <Header />
+          <ColourfulText />
+          <Footer />
+        </>} />
+        <Route path="/Menu" element={<CardDemo />} />
+  <Route path="/product/:id" element={<ProductDetails />} />
+       
+        <Route path="/Login" element={<Login />} />
+        <Route path="/AboutUs" element={<>
+          <BackgroundLinesDemo />
+        </>} />
+      </Routes>
     </Router>
   );
 }

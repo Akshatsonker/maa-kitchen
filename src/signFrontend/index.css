@@ -1,0 +1,31 @@
+@media screen and (max-width:600){
+body{
+    margin:0;
+    padding:0;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+.form{
+    position: absolute;
+    top: 50%;
+    left: 50%;      
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 400px;
+    padding: 20px;
+
+    background-color: #fff;
+    border-radius: 8px;
+
+}
+.button{
+    width: 100%;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+} 
