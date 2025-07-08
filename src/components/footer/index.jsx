@@ -39,10 +39,10 @@ export default function Footer() {
                     <div>
                         <h3 className="text-xl font-bold mb-4 text-red-400">Quick Links</h3>
                         <ul className="space-y-2">
-                            <li><a href="/welcome" className="hover:text-red-300 transition-colors">Home</a></li>
-                            <li><a href="/menu" className="hover:text-red-300 transition-colors">Menu</a></li>
-                            <li><a href="/aboutUs" className="hover:text-red-300 transition-colors">About Us</a></li>
-                            <li><a href="/login" className="hover:text-red-300 transition-colors">Login</a></li>
+                           <li><Link to="/welcome" className="hover:text-red-300 transition-colors">Home</Link></li>
+                           <li><Link to="/menu" className="hover:text-red-300 transition-colors">Menu</Link></li>
+                           <li><Link to="/aboutUs" className="hover:text-red-300 transition-colors">AboutUs</Link></li>
+                          <li><Link to="/login" className="hover:text-red-300 transition-colors">Login</Link></li>
                         </ul>
                     </div>
                     
@@ -59,7 +59,7 @@ export default function Footer() {
                             </div>
                             <div className="flex items-center">
                                 <FiMapPin className="mr-3 text-red-400" />
-                                <span>123 Food Street, Delhi</span>
+                                <span>NIT Jamshedpur, Jamshedpur</span>
                             </div>
                         </div>
                     </div>
