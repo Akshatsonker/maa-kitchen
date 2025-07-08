@@ -24,6 +24,7 @@ export default function Footer(){
 import React, { useState } from "react";
 import { FiPhone, FiMail, FiMapPin, FiMessageCircle, FiX } from "react-icons/fi";
 import Chatbot from "../../chatbot/chatbot.jsx";
+import { Link } from 'react-router-dom';
 
 export default function Footer() {
     const [showChatbot, setShowChatbot] = useState(false);
