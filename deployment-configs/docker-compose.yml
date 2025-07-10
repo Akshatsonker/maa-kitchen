@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: ../deployment-configs/Dockerfile.backend
+    ports:
+      - "8080:8080"
+    environment:
+      - NODE_ENV=production
+      - PORT=8080
+      - MONGO_CONN=${MONGO_CONN}
+      - JWT_SECRET=${JWT_SECRET}
+      - RAZORPAY_API_KEY=${RAZORPAY_API_KEY}
+      - RAZORPAY_API_SECRET=${RAZORPAY_API_SECRET}
+      - FRONTEND_URL=${FRONTEND_URL}
+    depends_on:
+      - mongodb
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: ../deployment-configs/Dockerfile.frontend
+    ports:
+      - "80:80"
+    environment:
+      - VITE_API_URL=${VITE_API_URL}
+      - VITE_RAZORPAY_KEY_ID=${VITE_RAZORPAY_KEY_ID}
+      - VITE_GOOGLE_AI_API_KEY=${VITE_GOOGLE_AI_API_KEY}
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  mongodb:
+    image: mongo:6
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
+      - MONGO_INITDB_DATABASE=maakitchen
+    volumes:
+      - mongodb_data:/data/db
+    restart: unless-stopped
+
+volumes:
+  mongodb_data:
