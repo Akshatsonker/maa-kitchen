@@ -1,10 +1,10 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import ChatbotIcon from './components/ChatbotIcon';
 import ChatForm from './components/ChatForm';
 import ChatMessage from './components/ChatMessage';
 import { projectInfo } from './projectInfo';
 import './index.css';
+
 const Chatbot = () => {
   const [chatHistory, setChatHistory] = useState([
     {
@@ -19,31 +19,31 @@ const Chatbot = () => {
   const generateBotResponse = async (history) => {
     // Add "Thinking..." message
     setChatHistory((prev) => {
-  if (prev.some((msg) => msg.text === 'Thinking...')) return prev;
-  return [...prev, { role: 'model', text: 'Thinking...' }];
-});
+      if (prev.some((msg) => msg.text === 'Thinking...')) return prev;
+      return [...prev, { role: 'model', text: 'Thinking...' }];
+    });
 
     try {
       // Format history for Gemini API
       const contents = history
-        .filter(({ text }) => typeof text === 'string' && text.trim() !== '') // Ensure text is valid
+        .filter(({ text }) => typeof text === 'string' && text.trim() !== '')
         .map(({ role, text }) => ({
           role: role === 'user' ? 'user' : 'model',
-          parts: [{ text: text }], // Explicitly use { text: text } to avoid shorthand issues
+          parts: [{ text: text }],
         }));
 
       if (contents.length === 0) {
         throw new Error('No valid messages to send to the API');
       }
 
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}?key=${import.meta.env.VITE_API_KEY}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ contents }),
-        }
-      );
+      // Use the Google AI API directly
+      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${import.meta.env.VITE_GOOGLE_AI_API_KEY}`;
+      
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ contents }),
+      });
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -55,7 +55,7 @@ const Chatbot = () => {
       // Handle Gemini API response structure
       const botResponse =
         data.candidates?.[0]?.content?.parts?.[0]?.text ||
-        'Sorry, I couldn’t process that request.';
+        'Sorry, I couldn\'t process that request.';
 
       // Remove "Thinking..." and add actual response
       setChatHistory((prev) => [

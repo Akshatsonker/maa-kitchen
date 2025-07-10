@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { authAPI } from '../config/api';
 
 const Login = () => {
-  const [email, setEmail] = useState(''); // Use email instead of username
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -13,30 +15,40 @@ const Login = () => {
       setError('Please fill in all fields');
       return;
     }
+    
     setError('');
+    setIsLoading(true);
+    
     try {
-      const response = await fetch('http://localhost:8080/signUp/signIn', { // Adjust URL as needed
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      });
-      const data = await response.json();
-      if (!data.success) {
-        setError(data.message);
-      } else {
-        // Save token if you want
-        localStorage.setItem('token', data.jwtToken);
+      const response = await authAPI.signin({ email, password });
+      
+      if (response.data.success) {
+        // Save token and user data
+        localStorage.setItem('authToken', response.data.token);
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+        
         // Redirect to welcome page
         navigate('/welcome');
+      } else {
+        setError(response.data.message || 'Login failed');
       }
     } catch (err) {
-      setError('Server error. Please try again later.');
+      console.error('Login error:', err);
+      const errorMessage = err.response?.data?.message || 'Server error. Please try again later.';
+      setError(errorMessage);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <div style={styles.container}>
       <form onSubmit={handleSubmit} style={styles.form}>
+        <div style={styles.header}>
+          <h2 style={styles.title}>Welcome Back</h2>
+          <p style={styles.subtitle}>Sign in to your MaaKitchen account</p>
+        </div>
+        
         <div style={styles.inputGroup}>
           <label style={styles.label}>Email:</label>
           <input
@@ -44,8 +56,11 @@ const Login = () => {
             value={email}
             onChange={e => setEmail(e.target.value)}
             style={styles.input}
+            disabled={isLoading}
+            required
           />
         </div>
+        
         <div style={styles.inputGroup}>
           <label style={styles.label}>Password:</label>
           <input
@@ -53,11 +68,28 @@ const Login = () => {
             value={password}
             onChange={e => setPassword(e.target.value)}
             style={styles.input}
+            disabled={isLoading}
+            required
           />
         </div>
+        
         {error && <p style={styles.error}>{error}</p>}
-        <button type="submit" style={styles.button}>Login</button>
-        <p style={styles.signupText}>Don't have an account? <Link to="/" style={styles.link}>Sign Up</Link></p>
+        
+        <button 
+          type="submit" 
+          style={{
+            ...styles.button,
+            opacity: isLoading ? 0.7 : 1,
+            cursor: isLoading ? 'not-allowed' : 'pointer'
+          }}
+          disabled={isLoading}
+        >
+          {isLoading ? 'Signing in...' : 'Login'}
+        </button>
+        
+        <p style={styles.signupText}>
+          Don't have an account? <Link to="/" style={styles.link}>Sign Up</Link>
+        </p>
       </form>
     </div>
   );
@@ -73,7 +105,7 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'center',
     fontFamily: 'Arial, sans-serif',
-    backgroundImage: "url('https://wallpaperaccess.com/full/1737995.jpg')",
+    backgroundImage: "url('https://images.unsplash.com/photo-1606787366850-de6330128bfc')",
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',
@@ -82,9 +114,24 @@ const styles = {
     width: '100%',
     maxWidth: '400px',
     padding: '2rem',
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    borderRadius: '8px',
-    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    borderRadius: '12px',
+    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+    backdropFilter: 'blur(10px)',
+  },
+  header: {
+    textAlign: 'center',
+    marginBottom: '2rem',
+  },
+  title: {
+    fontSize: '1.8rem',
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: '0.5rem',
+  },
+  subtitle: {
+    color: '#666',
+    fontSize: '0.9rem',
   },
   inputGroup: {
     marginBottom: '1.5rem',
@@ -94,14 +141,20 @@ const styles = {
     display: 'block',
     marginBottom: '0.5rem',
     fontWeight: '600',
+    color: '#333',
   },
   input: {
     width: '100%',
     padding: '0.75rem',
     fontSize: '1rem',
-    border: '1px solid #ccc',
-    borderRadius: '4px',
+    border: '2px solid #e1e5e9',
+    borderRadius: '8px',
     boxSizing: 'border-box',
+    transition: 'border-color 0.3s ease',
+    '&:focus': {
+      borderColor: '#007bff',
+      outline: 'none',
+    }
   },
   button: {
     width: '100%',
@@ -110,29 +163,31 @@ const styles = {
     backgroundColor: '#007bff',
     color: '#fff',
     border: 'none',
-    borderRadius: '4px',
+    borderRadius: '8px',
     cursor: 'pointer',
     marginBottom: '1rem',
-    transition: 'background-color 0.3s',
+    transition: 'background-color 0.3s ease',
+    fontWeight: '600',
   },
   error: {
-    color: 'red',
+    color: '#dc3545',
     marginBottom: '1rem',
     textAlign: 'center',
+    fontSize: '0.9rem',
+    padding: '0.5rem',
+    backgroundColor: '#f8d7da',
+    border: '1px solid #f5c6cb',
+    borderRadius: '4px',
   },
   signupText: {
     textAlign: 'center',
     margin: 0,
+    color: '#666',
   },
   link: {
     color: '#007bff',
     textDecoration: 'none',
-  },
-  '@media (max-width: 480px)': {
-    form: {
-      padding: '1.5rem',
-      margin: '0 1rem',
-    },
+    fontWeight: '600',
   },
 };
 
