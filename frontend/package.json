@@ -41,7 +41,12 @@
     "tailwindcss": "^4.1.10",
     "vite": "^6.0.5"
   },
-  "keywords": ["react", "vite", "food-delivery", "frontend"],
+  "keywords": [
+    "react",
+    "vite",
+    "food-delivery",
+    "frontend"
+  ],
   "author": "MaaKitchen Team",
   "license": "MIT"
 }

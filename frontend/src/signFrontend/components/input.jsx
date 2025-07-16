@@ -5,7 +5,7 @@ import { cn } from "../lib/utils.jsx";
 import { useMotionTemplate, useMotionValue, motion } from "framer-motion";
 
 const Input = React.forwardRef(({ className, type, ...props }, ref) => {
-  const radius = 100; // Change this to increase the radius of the hover effect
+  const radius = 100;
   const [visible, setVisible] = React.useState(false);
 
   const mouseX = useMotionValue(0);
@@ -13,7 +13,6 @@ const Input = React.forwardRef(({ className, type, ...props }, ref) => {
 
   function handleMouseMove({ currentTarget, clientX, clientY }) {
     const { left, top } = currentTarget.getBoundingClientRect();
-
     mouseX.set(clientX - left);
     mouseY.set(clientY - top);
   }
@@ -48,4 +47,4 @@ const Input = React.forwardRef(({ className, type, ...props }, ref) => {
 });
 Input.displayName = "Input";
 
-export { Input }; // Changed to named export
+export { Input };
